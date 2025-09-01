@@ -6,7 +6,6 @@ public class Polynomial {
     
     public static void main(String[] args) {
         try {
-            // Read JSON content from files
             String json1 = readJsonFile("1.json");
             String json2 = readJsonFile("2.json");
             
@@ -20,10 +19,8 @@ public class Polynomial {
     
     private static String readJsonFile(String filename) throws IOException {
         try {
-            // Try to read from current directory first
             return Files.readString(Paths.get(filename));
         } catch (IOException e) {
-            // If not found in current directory, try relative path
             System.err.println("Could not find " + filename + " in current directory");
             throw e;
         }
@@ -38,7 +35,6 @@ public class Polynomial {
         
         List<Point> points = new ArrayList<>();
         
-        // Parse all points
         for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
             String key = entry.getKey();
             if (key.equals("keys")) continue;
@@ -53,27 +49,24 @@ public class Polynomial {
                 long y = convertToDecimal(value, base);
                 points.add(new Point(x, y));
             } catch (NumberFormatException e) {
-                // Skip non-numeric keys
+        
                 continue;
             }
         }
         
-        // Sort points by x-coordinate and take first k points
+        
         points.sort((a, b) -> Integer.compare(a.x, b.x));
         List<Point> selectedPoints = points.subList(0, k);
         
-        // Use Lagrange interpolation to find polynomial value at x=0 (constant term)
         return lagrangeInterpolation(selectedPoints, 0);
     }
     
     private static Map<String, Object> parseJson(String json) {
         Map<String, Object> result = new HashMap<>();
         
-        // Remove whitespace and outer braces
         json = json.trim().replaceAll("\\s+", "");
         json = json.substring(1, json.length() - 1);
         
-        // Split by commas, but be careful about nested structures
         List<String> tokens = splitJsonTokens(json);
         
         for (String token : tokens) {
@@ -164,7 +157,6 @@ public class Polynomial {
         long result = 0;
         long power = 1;
         
-        // Convert from right to left
         for (int i = value.length() - 1; i >= 0; i--) {
             char digit = value.charAt(i);
             int digitValue;
